@@ -89,6 +89,10 @@ def predict(ds, audio_path):
 ds_global = load_model()
 
 app = Flask(__name__)
+@app.route('/test', methods=['Get'])
+def apitest():
+    print('Test method')
+    return('Test method')
 
 @app.route('/predict', methods=['Post'])
 def apicall():
@@ -98,7 +102,8 @@ def apicall():
     try:
         print("Saving file...", file=sys.stderr)
         f = request.files['file']
-        file_path = "./data/" + secure_filename(f.filename)
+        #file_path = "./data/" + secure_filename(f.filename)
+        file_path = "./data/" + f.filename
         f.save(file_path)
     except Exception as e:
         raise e
@@ -106,7 +111,7 @@ def apicall():
   
     text = predict(ds_global,file_path)
 
-    responce = jsonify({ 'text': text)
+    responce = jsonify({ 'text': text })
     responce.status_code = 200
 
     return(responce)
