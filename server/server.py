@@ -1,15 +1,21 @@
 from __future__ import absolute_import, division, print_function
 from timeit import default_timer as timer
-import os
+import sys, os
+
 from flask import Flask, jsonify, request, json, Response
 from werkzeug import secure_filename
+
 import pandas as pd
 import argparse
 import subprocess
-import sys
 import scipy.io.wavfile as wav
 import numpy as np
+
 from deepspeech.model import Model
+
+import pyfreeling
+import analyzer
+
 
 # These constants control the beam search decoder
 
@@ -88,6 +94,7 @@ def predict(ds, audio_path):
     return text
 
 ds_global = load_model()
+tk, sp, sid, mf, tg, sen = analyzer.set_up_analyzer()
 
 app = Flask(__name__)
 @app.route('/test', methods=['Get'])
@@ -109,7 +116,11 @@ def apicall():
         raise e
     print("File has been saved...", file=sys.stderr)
   
+    print("Getting transcript...")
     text = predict(ds_global,file_path)
+    
+    print("Analyzing PoS...")
+    sentences = analyzer.analyze(text + ".", tk, sp, sid, mf, tg, sen)
 
     #responce = jsonify({ 'text': text })
     #responce.status_code = 200

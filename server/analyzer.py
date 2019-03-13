@@ -2,6 +2,7 @@ import pyfreeling
 import sys, os
 
 def set_up_analyzer():
+    print("Setting up analyzer...")
     ## Check whether we know where to find FreeLing data files
     if "FREELINGDIR" not in os.environ :
         if sys.platform == "win32" or sys.platform == "win64" : os.environ["FREELINGDIR"] = "C:\\Program Files"
@@ -51,7 +52,7 @@ def set_up_analyzer():
     sen=pyfreeling.senses(DATA+LANG+"/senses.dat");
     #parser= pyfreeling.chart_parser(DATA+LANG+"/chunker/grammar-chunk.dat");
     #dep=pyfreeling.dep_txala(DATA+LANG+"/dep_txala/dependences.dat", parser.get_start_symbol());
-
+    print("Done.")
     return (tk, sp, sid, mf, tg, sen)
     
 def analyze(line, tk, sp, sid, mf, tg, sen):
