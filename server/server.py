@@ -76,7 +76,7 @@ def predict(ds, audio_path):
     if fs != 16000:
         if fs < 16000:
             print('Warning: original sample rate (%d) is lower than 16kHz. Up-sampling might produce erratic speech recognition.' % (fs), file=sys.stderr)
-        fs, audio = convert_samplerate(args.audio)
+        fs, audio = convert_samplerate(audio)
     audio_length = len(audio) * ( 1 / 16000)
 
     print('Running inference.', file=sys.stderr)
@@ -111,10 +111,10 @@ def apicall():
   
     text = predict(ds_global,file_path)
 
-    responce = jsonify({ 'text': text })
-    responce.status_code = 200
+    #responce = jsonify({ 'text': text })
+    #responce.status_code = 200
 
-    return(responce)
+    return text
 
 @app.errorhandler(400)
 def bad_request(error=None):
