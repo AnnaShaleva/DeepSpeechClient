@@ -19,8 +19,12 @@ namespace Client.ConsoleApp
             Directory.CreateDirectory(outputFolder);
             var outputFilePath = Path.Combine(outputFolder, "audio.wav");
 
+            var outRate = 16000;
+            var chennelsNumber = 1;
+            var outFormat = new WaveFormat(outRate, chennelsNumber);
+
             using (var waveIn = new WaveInEvent())
-            using (var writer = new WaveFileWriter(outputFilePath, waveIn.WaveFormat))
+            using (var writer = new WaveFileWriter(outputFilePath, outFormat))
             {
                 waveIn.DataAvailable += (s, a) =>
                 {
