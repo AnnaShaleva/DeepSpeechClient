@@ -23,7 +23,7 @@ def set_up_analyzer():
     la=pyfreeling.lang_ident(DATA+"common/lang_ident/ident-few.dat");
 
     # create options set for maco analyzer. Default values are Ok, except for data files.
-    LANG="en";
+    LANG="ru";
     op= pyfreeling.maco_options(LANG);
     op.set_data_files( "", 
                        DATA + "common/punct.dat",
