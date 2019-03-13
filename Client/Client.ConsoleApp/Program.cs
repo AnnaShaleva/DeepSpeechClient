@@ -54,7 +54,9 @@ namespace Client.ConsoleApp
 
             using (WebClient client = new WebClient())
             {
+                Console.WriteLine("Uploading audio to server...");
                 var responceArray = client.UploadFile("http://localhost:8000/predict", resampledFilePath);
+                Console.WriteLine("Done.");
                 var text = System.Text.Encoding.UTF8.GetChars(responceArray);
                 Console.WriteLine(text);
             }            
