@@ -1,7 +1,8 @@
 from __future__ import absolute_import, division, print_function
 from timeit import default_timer as timer
 import os
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, json, Response
+from werkzeug import secure_filename
 import pandas as pd
 import argparse
 import subprocess
@@ -102,8 +103,7 @@ def apicall():
     try:
         print("Saving file...", file=sys.stderr)
         f = request.files['file']
-        #file_path = "./data/" + secure_filename(f.filename)
-        file_path = "./data/" + f.filename
+        file_path = "./data/" + secure_filename(f.filename)
         f.save(file_path)
     except Exception as e:
         raise e
