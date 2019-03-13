@@ -54,7 +54,7 @@ def set_up_analyzer():
 
     return (tk, sp, sid, mf, tg, sen)
     
-def analize():    # process input text
+def analyze(line, tk, sp, sid, mf, tg, sen):
     print ("Start analyzyng...\n");
 
     words_list = tk.tokenize(line);
@@ -95,5 +95,5 @@ def analize():    # process input text
        #dp = s.get_dep_tree();
        #printDepTree(dp, 0)
 
-def close_session(sp, sid)
+def close_session(sp, sid):
     sp.close_session(sid);
