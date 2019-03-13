@@ -1,4 +1,5 @@
 ﻿using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace Client.ConsoleApp
             Directory.CreateDirectory(outputFolder);
             var outputFilePath = Path.Combine(outputFolder, "audio.wav");
 
-            var outRate = 16000;
+            var outRate = 8000;
             var chennelsNumber = 1;
             var outFormat = new WaveFormat(outRate, chennelsNumber);
 
@@ -46,13 +47,52 @@ namespace Client.ConsoleApp
             Console.WriteLine($"Audio was written to {outputFilePath}.\nPress any key to continue...");
             Console.ReadLine();
 
+            Console.WriteLine("Resampling started...");
+            var resampledFilePath = Path.Combine(outputFolder, "resampled_audio.wav");
+            WDLResample(outputFilePath, 16000, resampledFilePath);
+            Console.WriteLine("Resampling ended.");
+
             using (WebClient client = new WebClient())
             {
-                var responceArray = client.UploadFile("http://localhost:8000/predict", outputFilePath);
+                var responceArray = client.UploadFile("http://localhost:8000/predict", resampledFilePath);
                 var text = System.Text.Encoding.UTF8.GetChars(responceArray);
                 Console.WriteLine(text);
             }            
             Console.ReadLine();
+        }
+
+        static void MFResample(string inFile, int outRate, string outFile)
+        {
+            using (var reader = new WaveFileReader(inFile))
+            {
+                var resampleOutFormat = new WaveFormat(outRate, 1);
+                using (var resampler = new MediaFoundationResampler(reader, resampleOutFormat))
+                {
+                    // resampler.ResamplerQuality = 60;
+                    WaveFileWriter.CreateWaveFile(outFile, resampler);
+                }
+            }
+        }
+
+        static void WDLResample(string inFile, int outRate, string outFile)
+        {
+            using (var reader = new AudioFileReader(inFile))
+            {
+                var resampler = new WdlResamplingSampleProvider(reader, outRate);
+                WaveFileWriter.CreateWaveFile16(outFile, resampler);
+            }
+        }
+
+        static void ACMResample(string inFile, int outRate, string outFile)
+        {
+            using (var reader = new WaveFileReader(inFile))
+            {
+                var outFormat = new WaveFormat(outRate, reader.WaveFormat.Channels);
+                using (var resampler = new WaveFormatConversionStream(outFormat, reader))
+                {
+                    WaveFileWriter.CreateWaveFile(outFile, resampler);
+                }
+            }
         }
     }
 }
