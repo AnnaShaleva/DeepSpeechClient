@@ -1,16 +1,17 @@
 import pyfreeling
 import sys, os
+from timeit import default_timer as timer
+
 
 def set_up_analyzer():
-    print("Setting up analyzer...")
-    ## Check whether we know where to find FreeLing data files
+   ## Check whether we know where to find FreeLing data files
     if "FREELINGDIR" not in os.environ :
         if sys.platform == "win32" or sys.platform == "win64" : os.environ["FREELINGDIR"] = "C:\\Program Files"
         else : os.environ["FREELINGDIR"] = "/usr/local"
-        print("FREELINGDIR environment variable not defined, trying ", os.environ["FREELINGDIR"], file=sys.stderr)
+        #print("FREELINGDIR environment variable not defined, trying ", os.environ["FREELINGDIR"], file=sys.stderr)
 
         if not os.path.exists(os.environ["FREELINGDIR"]+"/share/freeling") :
-            print("Folder",os.environ["FREELINGDIR"]+"/share/freeling", "not found.\nPlease set FREELINGDIR environment variable to FreeLing installation directory", file=sys.stderr)
+            #print("Folder",os.environ["FREELINGDIR"]+"/share/freeling", "not found.\nPlease set FREELINGDIR environment variable to FreeLing installation directory", file=sys.stderr)
             sys.exit(1)
 
     # Location of FreeLing configuration files.
@@ -52,26 +53,30 @@ def set_up_analyzer():
     sen=pyfreeling.senses(DATA+LANG+"/senses.dat");
     #parser= pyfreeling.chart_parser(DATA+LANG+"/chunker/grammar-chunk.dat");
     #dep=pyfreeling.dep_txala(DATA+LANG+"/dep_txala/dependences.dat", parser.get_start_symbol());
-    print("Done.")
+    
     return (tk, sp, sid, mf, tg, sen)
     
 def analyze(line, tk, sp, sid, mf, tg, sen):
-    print ("Start analyzyng...\n");
-
+    #print ("Start analyzyng...\n");
+    analyze_start = timer()
+   
     words_list = tk.tokenize(line);
-    print('Tokenized...');
+    #print('Tokenized...');
     
     sentences_list = sp.split(sid, words_list, False);
-    print('Splitted...')
+    #print('Splitted...')
 
     sentences_list = mf.analyze(sentences_list);
     hmm_analyzed_sentences_list = tg.analyze(sentences_list);
-    print('Tagged...')
+    #print('Tagged...')
+    
+    analyze_end = timer() - analyze_start
+    #print('Analyzed in %0.3fs.' % (analyze_end), file=sys.stderr)
 
-    for sentence in hmm_analyzed_sentences_list:
-        words = sentence.get_words();
-        for word in words:
-            print(word.get_form() + ' ' + word.get_lemma() + ' ' + word.get_tag());
+    #for sentence in hmm_analyzed_sentences_list:
+    #    words = sentence.get_words();
+    #    for word in words:
+    #        print(word.get_form() + ' ' + word.get_lemma() + ' ' + word.get_tag());
 
     return hmm_analyzed_sentences_list
     #ls = sp.split(sid,l,False);
