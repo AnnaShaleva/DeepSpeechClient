@@ -13,8 +13,8 @@ import numpy as np
 
 from deepspeech.model import Model
 
-import pyfreeling
-import analyzer
+#import pyfreeling
+#import analyzer
 
 
 # These constants control the beam search decoder
@@ -49,17 +49,17 @@ def load_model():
     lm_path = 'lm.binary'
     trie_path = 'trie'
 
-    print('Loading model from file %s' % (model_path), file=sys.stderr)
-    model_load_start = timer()
+    #print('Loading model from file %s' % (model_path), file=sys.stderr)
+    #model_load_start = timer()
     ds = Model(model_path, N_FEATURES, N_CONTEXT, alphabet_path, BEAM_WIDTH)
-    model_load_end = timer() - model_load_start
-    print('Loaded model in %0.3fs.' % (model_load_end), file=sys.stderr)
+    #model_load_end = timer() - model_load_start
+    #print('Loaded model in %0.3fs.' % (model_load_end), file=sys.stderr)
 
-    print('Loading language model from files %s %s' % (lm_path, trie_path), file=sys.stderr)
-    lm_load_start = timer()
+    #print('Loading language model from files %s %s' % (lm_path, trie_path), file=sys.stderr)
+    #lm_load_start = timer()
     ds.enableDecoderWithLM(alphabet_path, lm_path, trie_path, LM_WEIGHT, WORD_COUNT_WEIGHT, VALID_WORD_COUNT_WEIGHT)
-    lm_load_end = timer() - lm_load_start
-    print('Loaded language model in %0.3fs.' % (lm_load_end), file=sys.stderr)
+    #lm_load_end = timer() - lm_load_start
+    #print('Loaded language model in %0.3fs.' % (lm_load_end), file=sys.stderr)
     return ds
 
 def convert_samplerate(audio_path):
@@ -75,53 +75,55 @@ def convert_samplerate(audio_path):
     return 16000, audio
 
 def predict(ds, audio_path):
-    print('Reading audio...', file=sys.stderr)
+    #print('Reading audio...', file=sys.stderr)
 
     fs, audio = wav.read(audio_path)
     
     if fs != 16000:
-        if fs < 16000:
-            print('Warning: original sample rate (%d) is lower than 16kHz. Up-sampling might produce erratic speech recognition.' % (fs), file=sys.stderr)
+        #if fs < 16000:
+            #print('Warning: original sample rate (%d) is lower than 16kHz. Up-sampling might produce erratic speech recognition.' % (fs), file=sys.stderr)
         fs, audio = convert_samplerate(audio)
     audio_length = len(audio) * ( 1 / 16000)
 
-    print('Running inference.', file=sys.stderr)
-    inference_start = timer()
+    #print('Running inference.', file=sys.stderr)
+    #inference_start = timer()
     text = ds.stt(audio, fs)
-    print(text)
-    inference_end = timer() - inference_start
-    print('Inference took %0.3fs for %0.3fs audio file.' % (inference_end, audio_length), file=sys.stderr)
+    #print(text)
+    #inference_end = timer() - inference_start
+    #print('Inference took %0.3fs for %0.3fs audio file.' % (inference_end, audio_length), file=sys.stderr)
     return text
 
 ds_global = load_model()
-tk, sp, sid, mf, tg, sen = analyzer.set_up_analyzer()
+#tk, sp, sid, mf, tg, sen = analyzer.set_up_analyzer()
 
 app = Flask(__name__)
+
 @app.route('/test', methods=['Get'])
 def apitest():
-    print('Test method')
+    #print('Test method')
     return('Test method')
 
 @app.route('/predict', methods=['Post'])
 def apicall():
     
-    print("Resived POST request...")
+    #print("Resived POST request...")
 
     try:
-        print("Saving file...", file=sys.stderr)
+        #print("Saving file...", file=sys.stderr)
         f = request.files['file']
         file_path = "./data/" + secure_filename(f.filename)
         f.save(file_path)
     except Exception as e:
         raise e
-    print("File has been saved...", file=sys.stderr)
+    #print("File has been saved...", file=sys.stderr)
   
-    print("Getting transcript...")
+    #print("Getting transcript...")
     text = predict(ds_global,file_path)
     
-    print("Analyzing PoS...")
-    sentences = analyzer.analyze(text + ".", tk, sp, sid, mf, tg, sen)
+    #print("Analyzing PoS...")
+    #sentences = analyzer.analyze(text + ".", tk, sp, sid, mf, tg, sen)
 
+    #print("Done")
     #responce = jsonify({ 'text': text })
     #responce.status_code = 200
 
