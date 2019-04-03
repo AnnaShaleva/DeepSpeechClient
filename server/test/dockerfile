@@ -2,5 +2,5 @@ FROM python:3.6-alpine
 ADD . /web-app
 WORKDIR /web-app
 RUN pip install -r requirements.txt
-CMD ["gunicorn", "-c gunicorn_config.cfg", "web-app:app"]
+CMD ["gunicorn -c gunicorn_config.cfg", "web-app:app"]
 
