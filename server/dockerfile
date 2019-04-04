@@ -1,7 +1,6 @@
 FROM python:3.6-alpine
 ADD . /server
 WORKDIR /server
-RUN pip install -r requirements.txt
 
 ADD https://github.com/GeorgeFedoseev/DeepSpeech/releases/download/1.0/DeepSpeech-ru-v1.0-tensorflow_pb_models.tar.gz ./
 RUN tar --strip-components=1 -xzf DeepSpeech-ru-v1.0-tensorflow_pb_models.tar.gz \
@@ -10,6 +9,8 @@ RUN tar --strip-components=1 -xzf DeepSpeech-ru-v1.0-tensorflow_pb_models.tar.gz
 ADD https://github.com/GeorgeFedoseev/DeepSpeech/releases/download/1.0/DeepSpeech-ru-v1.0-language_model.tar.gz ./
 RUN tar --strip-components=1 -xzf DeepSpeech-ru-v1.0-language_model.tar.gz \
 && rm DeepSpeech-ru-v1.0-language_model.tar.gz
+
+RUN pip install -r requirements.txt
 
 CMD ["gunicorn", "-c", "gunicorn_config.cfg", "server:app"]
 
