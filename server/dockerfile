@@ -1,16 +1,15 @@
 FROM python:3.6-alpine
 ADD . /server
+ADD https://github.com/GeorgeFedoseev/DeepSpeech/releases/download/1.0/DeepSpeech-ru-v1.0-tensorflow_pb_models.tar.gz /server
+ADD https://github.com/GeorgeFedoseev/DeepSpeech/releases/download/1.0/DeepSpeech-ru-v1.0-language_model.tar.gz /server
+
 WORKDIR /server
-
-ADD https://github.com/GeorgeFedoseev/DeepSpeech/releases/download/1.0/DeepSpeech-ru-v1.0-tensorflow_pb_models.tar.gz ./
 RUN tar --strip-components=1 -xzf DeepSpeech-ru-v1.0-tensorflow_pb_models.tar.gz \
-&& rm DeepSpeech-ru-v1.0-tensorflow_pb_models.tar.gz
+&& rm DeepSpeech-ru-v1.0-tensorflow_pb_models.tar.gz \
+&& tar --strip-components=1 -xzf DeepSpeech-ru-v1.0-language_model.tar.gz \
+&& rm DeepSpeech-ru-v1.0-language_model.tar.gz \
+&& pip install -r requirements.txt
 
-ADD https://github.com/GeorgeFedoseev/DeepSpeech/releases/download/1.0/DeepSpeech-ru-v1.0-language_model.tar.gz ./
-RUN tar --strip-components=1 -xzf DeepSpeech-ru-v1.0-language_model.tar.gz \
-&& rm DeepSpeech-ru-v1.0-language_model.tar.gz
-
-RUN pip install -r requirements.txt
-
+WORKDIR /server
 CMD ["gunicorn", "-c", "gunicorn_config.cfg", "server:app"]
 
