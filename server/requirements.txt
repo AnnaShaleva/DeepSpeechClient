@@ -39,7 +39,7 @@ mock==2.0.0
 numpy==1.14.3
 pafy==0.5.4
 pandas==0.22.0
-paramiko==2.4.1
+paramiko==2.10.1
 pbr==4.0.2
 pefile==2017.11.5
 progressbar2==3.37.1
