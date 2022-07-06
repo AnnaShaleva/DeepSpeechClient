@@ -24,7 +24,7 @@ future==0.16.0
 gast==0.2.0
 grpcio==1.11.0
 gunicorn==19.9.0
-html5lib==0.9999999
+html5lib==0.999999999
 idna==2.6
 ipaddress==1.0.22
 itsdangerous==0.24
