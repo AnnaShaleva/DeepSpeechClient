@@ -43,7 +43,7 @@ paramiko==2.4.1
 pbr==4.0.2
 pefile==2017.11.5
 progressbar2==3.37.1
-protobuf==3.5.2.post1
+protobuf==3.18.3
 psutil==5.4.6
 pyasn1==0.4.2
 pycparser==2.18
